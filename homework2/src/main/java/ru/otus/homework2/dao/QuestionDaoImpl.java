@@ -1,44 +1,68 @@
 package ru.otus.homework2.dao;
 
 import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.bean.ColumnPositionMappingStrategy;
-import au.com.bytecode.opencsv.bean.CsvToBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+import ru.otus.homework2.domain.Answer;
 import ru.otus.homework2.domain.Question;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Component
 public class QuestionDaoImpl implements QuestionDao {
 
-    @Value("${questions}")
-    private Resource questions;
+    private final static String BOOLEAN_STRING = "true";
 
-    private List<Question> questionList;
+    private final Resource questions;
 
-    @PostConstruct
-    public void initQuestions() throws IOException {
-        CsvToBean csv = new CsvToBean();
-        CSVReader csvReader = new CSVReader(new InputStreamReader(questions.getInputStream()));
-        questionList = csv.parse(setColunmMapping(), csvReader);
+    private final List<Question> questionList = new ArrayList<>();
+
+    public QuestionDaoImpl(@Value("${questions}") Resource questions) {
+        this.questions = questions;
     }
 
-    @Override
-    public List<Question> getAll() {
+    public List<Question> getAll()  {
+        questionList.clear();
+        questionList.addAll(readQuestions());
         return questionList;
     }
 
-    private ColumnPositionMappingStrategy setColunmMapping()
-    {
-        ColumnPositionMappingStrategy strategy = new ColumnPositionMappingStrategy();
-        strategy.setType(Question.class);
-        String[] columns = new String[] {"id", "name"};
-        strategy.setColumnMapping(columns);
-        return strategy;
+    private List<Question> readQuestions()  {
+        CSVReader csvReader = null;
+        List<Question> questionsList = new ArrayList<>();
+        List<String[]> allRows = new ArrayList<>();
+        try (InputStreamReader inputStreamReader = new InputStreamReader(questions.getInputStream())) {
+            csvReader = new CSVReader(inputStreamReader);
+            allRows.addAll(csvReader.readAll());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (csvReader != null) {
+                try {
+                    csvReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        allRows.forEach(row -> {
+            String question = row[0];
+            List<Answer> answerList = new ArrayList<>();
+            for (int i = 1; i < row.length - 1; i = i + 2) {
+                Answer answer = new Answer(row[i], parseBoolean(row[i + 1]));
+                answerList.add(answer);
+            }
+            questionsList.add(new Question(question, answerList));
+        });
+
+        return questionsList;
+    }
+
+    private boolean parseBoolean(String row) {
+        return BOOLEAN_STRING.equals(row) ? true : false;
     }
 }
