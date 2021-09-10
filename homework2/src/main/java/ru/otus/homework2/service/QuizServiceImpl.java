@@ -1,49 +1,60 @@
 package ru.otus.homework2.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.otus.homework2.domain.Answer;
+import ru.otus.homework2.domain.Person;
+import ru.otus.homework2.domain.Question;
 import ru.otus.homework2.domain.TestResult;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @Service
 public class QuizServiceImpl implements QuizServise {
 
-    private final PrintService printService;
+    private final IOService ioService;
     private final QuestionService questionService;
-    private final TestResultService testResultService;
+    private final PersonService personService;
+    private final int correctAnswers;
+
+    public QuizServiceImpl(IOService ioService, QuestionService questionService, PersonService personService,
+                           @Value("${correctAnswersToPass}") int correctAnswers) {
+        this.ioService = ioService;
+        this.questionService = questionService;
+        this.personService = personService;
+        this.correctAnswers = correctAnswers;
+    }
 
     @Override
     public void startTest() {
 
-        printService.write("Enter a name: ");
-        String firstName = printService.read();
-        printService.write("Enter your last name: ");
-        String lastName = printService.read();
+        Person person = personService.getPerson();
 
-        TestResult testResult = testResultService.getTestResultByPerson(firstName, lastName);
+        TestResult testResult = new TestResult(person, correctAnswers);
 
         questionService.getAll().forEach(question -> {
-            printService.write(question.getName());
-            List<Answer> answers = question.getAnswers();
-            answers.forEach(answer -> printService.write(((answers.indexOf(answer) + 1) + " - " + answer.getName())));
-            int answerId = Integer.parseInt(printService.read());
-            Answer answer = answers.get(answerId - 1);
-            if (answer.isRight()) {
-                testResult.setCorrectAnswers(testResult.getCorrectAnswers() + 1);
-                if (testResult.getCorrectAnswers() >= testResult.getCorrectAnswersToPass() && !testResult.isPassed()) {
-                    testResult.setPassed(true);
-                }
+            boolean answerResult = writeQuestionAndCheckAnswer(question);
+            if (answerResult) {
+                testResult.incCorrectAnswers();
             } else {
-                testResult.setWrongAnswers(testResult.getWrongAnswers() + 1);
+                testResult.incWrongAnswers();
             }
         });
 
-        printService.write(String.format("Test result: %s, correct answers - %d, incorrect answers - %d.",
+        ioService.write(String.format("Test result: %s, correct answers - %d, incorrect answers - %d.",
                 testResult.isPassed() ? "pass": "not pass",
                 testResult.getCorrectAnswers(),
                 testResult.getWrongAnswers()));
+    }
+
+    private boolean writeQuestionAndCheckAnswer(Question question) {
+        ioService.write(question.getName());
+        List<Answer> answers = question.getAnswers();
+        for (int i = 0; i < answers.size(); i++) {
+            ioService.write(i + 1 + " - " + answers.get(i).getName());
+        }
+        int answerId = ioService.readInt();
+        Answer answer = answers.get(answerId - 1);
+        return answer.isRight();
     }
 }

@@ -1,9 +1,11 @@
 package ru.otus.homework2.service;
 
-public interface PrintService {
+public interface IOService {
 
     void write(String outputString);
 
-    String read();
+    String readString();
+
+    int readInt();
 
 }

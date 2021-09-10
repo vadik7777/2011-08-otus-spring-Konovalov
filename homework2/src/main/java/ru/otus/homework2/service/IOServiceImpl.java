@@ -7,13 +7,13 @@ import java.io.*;
 import java.util.Scanner;
 
 @Service
-public class PrintServiceImpl implements PrintService {
+public class IOServiceImpl implements IOService {
 
     private final PrintWriter printWriter;
     private final Scanner scanner;
 
-    public PrintServiceImpl(@Value("#{ T(java.lang.System).out }") PrintStream printStream,
-                            @Value("#{ T(java.lang.System).in }") InputStream inputStream) {
+    public IOServiceImpl(@Value("#{ T(java.lang.System).out }") PrintStream printStream,
+                         @Value("#{ T(java.lang.System).in }") InputStream inputStream) {
         this.printWriter = new PrintWriter(printStream, true);
         this.scanner = new Scanner(inputStream);
     }
@@ -24,7 +24,12 @@ public class PrintServiceImpl implements PrintService {
     }
 
     @Override
-    public String read() {
+    public String readString() {
         return scanner.nextLine();
+    }
+
+    @Override
+    public int readInt() {
+        return scanner.nextInt();
     }
 }

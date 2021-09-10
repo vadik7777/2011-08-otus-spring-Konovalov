@@ -15,20 +15,15 @@ import java.util.List;
 @Component
 public class QuestionDaoImpl implements QuestionDao {
 
-    private final static String BOOLEAN_STRING = "true";
-
+    private final static String BOOLEAN_STRING_TRUE = "true";
     private final Resource questions;
-
-    private final List<Question> questionList = new ArrayList<>();
 
     public QuestionDaoImpl(@Value("${questions}") Resource questions) {
         this.questions = questions;
     }
 
     public List<Question> getAll()  {
-        questionList.clear();
-        questionList.addAll(readQuestions());
-        return questionList;
+        return readQuestions();
     }
 
     private List<Question> readQuestions()  {
@@ -63,6 +58,6 @@ public class QuestionDaoImpl implements QuestionDao {
     }
 
     private boolean parseBoolean(String row) {
-        return BOOLEAN_STRING.equals(row) ? true : false;
+        return BOOLEAN_STRING_TRUE.equals(row);
     }
 }
