@@ -29,7 +29,6 @@ public class QuizServiceImpl implements QuizServise {
     public void startTest() {
 
         Person person = personService.getPerson();
-
         TestResult testResult = new TestResult(person, correctAnswers);
 
         questionService.getAll().forEach(question -> {
@@ -40,11 +39,7 @@ public class QuizServiceImpl implements QuizServise {
                 testResult.incWrongAnswers();
             }
         });
-
-        ioService.write(String.format("Test result: %s, correct answers - %d, incorrect answers - %d.",
-                testResult.isPassed() ? "pass": "not pass",
-                testResult.getCorrectAnswers(),
-                testResult.getWrongAnswers()));
+        writeResult(testResult);
     }
 
     private boolean writeQuestionAndCheckAnswer(Question question) {
@@ -56,5 +51,12 @@ public class QuizServiceImpl implements QuizServise {
         int answerId = ioService.readInt();
         Answer answer = answers.get(answerId - 1);
         return answer.isRight();
+    }
+
+    private void writeResult(TestResult testResult) {
+        ioService.write(String.format("Test result: %s, correct answers - %d, incorrect answers - %d.",
+                testResult.isPassed() ? "pass": "not pass",
+                testResult.getCorrectAnswers(),
+                testResult.getWrongAnswers()));
     }
 }

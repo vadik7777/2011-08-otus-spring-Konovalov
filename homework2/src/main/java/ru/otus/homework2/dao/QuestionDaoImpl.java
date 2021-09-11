@@ -6,6 +6,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import ru.otus.homework2.domain.Answer;
 import ru.otus.homework2.domain.Question;
+import ru.otus.homework2.exception.CSVReadException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,27 +23,18 @@ public class QuestionDaoImpl implements QuestionDao {
         this.questions = questions;
     }
 
-    public List<Question> getAll()  {
+    public List<Question> getAll() {
         return readQuestions();
     }
 
     private List<Question> readQuestions()  {
-        CSVReader csvReader = null;
         List<Question> questionsList = new ArrayList<>();
         List<String[]> allRows = new ArrayList<>();
-        try (InputStreamReader inputStreamReader = new InputStreamReader(questions.getInputStream())) {
-            csvReader = new CSVReader(inputStreamReader);
+        try (InputStreamReader inputStreamReader = new InputStreamReader(questions.getInputStream());
+             CSVReader csvReader = new CSVReader(inputStreamReader)) {
             allRows.addAll(csvReader.readAll());
         } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (csvReader != null) {
-                try {
-                    csvReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            throw new CSVReadException("CSV file read error");
         }
         allRows.forEach(row -> {
             String question = row[0];
