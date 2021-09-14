@@ -1,0 +1,9 @@
+questions: csv/questions.csv
+correctAnswersToPass: 3
+locale: ru
+spring:
+  messages:
+    basename: i18n/messages
+  output:
+    ansi:
+      enabled: always

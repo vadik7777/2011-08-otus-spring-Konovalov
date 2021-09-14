@@ -14,12 +14,20 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Person getPerson() {
-
-        ioService.write("Enter a name: ");
+        writeFirstName();
         String firstName = ioService.readString();
-        ioService.write("Enter your last name: ");
+        writeLastName();
         String lastName = ioService.readString();
-
         return personDao.getPerson(firstName, lastName);
+    }
+
+    @Override
+    public void writeFirstName() {
+        ioService.write("Enter a name: ");
+    }
+
+    @Override
+    public void writeLastName() {
+        ioService.write("Enter your last name: ");
     }
 }
