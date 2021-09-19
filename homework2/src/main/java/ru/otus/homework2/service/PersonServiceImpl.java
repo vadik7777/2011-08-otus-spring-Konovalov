@@ -21,13 +21,11 @@ public class PersonServiceImpl implements PersonService {
         return personDao.getPerson(firstName, lastName);
     }
 
-    @Override
-    public void writeFirstName() {
+    private void writeFirstName() {
         ioService.write("Enter a name: ");
     }
 
-    @Override
-    public void writeLastName() {
+    private void writeLastName() {
         ioService.write("Enter your last name: ");
     }
 }

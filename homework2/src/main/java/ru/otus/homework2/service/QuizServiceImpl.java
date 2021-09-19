@@ -42,8 +42,7 @@ public class QuizServiceImpl implements QuizService {
         writeResult(testResult.isPassed(), testResult.getCorrectAnswers(), testResult.getWrongAnswers());
     }
 
-    @Override
-    public boolean checkAnswer(Question question) {
+    private boolean checkAnswer(Question question) {
         writeQuestion(question.getName());
         List<Answer> answers = question.getAnswers();
         for (int i = 0; i < answers.size(); i++) {
@@ -54,24 +53,20 @@ public class QuizServiceImpl implements QuizService {
         return answer.isRight();
     }
 
-    @Override
-    public void writeAnswer(int answerIndex, String answer) {
+    private void writeAnswer(int answerIndex, String answer) {
         ioService.write(answerIndex + " - " + answer);
     }
 
-    @Override
-    public void writeQuestion(String question) {
+    private void writeQuestion(String question) {
         ioService.write(question);
     }
 
-    @Override
-    public void writeResult(boolean pass, int correctAnswers, int wrongAnswers) {
+    private void writeResult(boolean pass, int correctAnswers, int wrongAnswers) {
         ioService.write(String.format("Test result: %s, correct answers - %d, incorrect answers - %d.",
                 pass ? "pass": "not pass", correctAnswers, wrongAnswers));
     }
 
-    @Override
-    public int readAnswer() {
+    private int readAnswer() {
         return ioService.readInt();
     }
 }
