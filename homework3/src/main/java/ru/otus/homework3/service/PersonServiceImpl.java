@@ -1,36 +1,32 @@
 package ru.otus.homework3.service;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Primary;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.otus.homework2.dao.PersonDao;
-import ru.otus.homework2.service.IOService;
+import ru.otus.homework3.dao.PersonDao;
+import ru.otus.homework3.domain.Person;
 
-import java.util.Locale;
+@RequiredArgsConstructor
+@Service
+public class PersonServiceImpl implements PersonService {
 
-@Primary
-@Service("personServiceHomeWork3Impl")
-public class PersonServiceImpl extends ru.otus.homework2.service.PersonServiceImpl {
-
+    private final LSIOService lsioService;
     private final IOService ioService;
-    private final String locale;
-    private final MessageSource messageSource;
-
-    public PersonServiceImpl(IOService ioService, PersonDao personDao, MessageSource messageSource, @Value("${locale}") String locale) {
-        super(ioService, personDao);
-        this.ioService = ioService;
-        this.messageSource = messageSource;
-        this.locale = locale;
-    }
+    private final PersonDao personDao;
 
     @Override
-    public void writeFirstName() {
-        ioService.write(messageSource.getMessage("enter_first_name", null, Locale.forLanguageTag(locale)));
+    public Person getPerson() {
+        writeFirstName();
+        String firstName = ioService.readString();
+        writeLastName();
+        String lastName = ioService.readString();
+        return personDao.getPerson(firstName, lastName);
     }
 
-    @Override
-    public void writeLastName() {
-        ioService.write(messageSource.getMessage("enter_last_name", null, Locale.forLanguageTag(locale)));
+    private void writeFirstName() {
+        lsioService.write("enter_first_name");
+    }
+
+    private void writeLastName() {
+        lsioService.write("enter_last_name");
     }
 }

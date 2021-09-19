@@ -1,67 +1,78 @@
 package ru.otus.homework3.service;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import ru.otus.homework2.domain.Answer;
-import ru.otus.homework2.domain.Question;
-import ru.otus.homework2.service.IOService;
-import ru.otus.homework2.service.PersonService;
-import ru.otus.homework2.service.QuestionService;
+import ru.otus.homework3.domain.Answer;
+import ru.otus.homework3.domain.Person;
+import ru.otus.homework3.domain.Question;
+import ru.otus.homework3.domain.TestResult;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
-@Primary
-@Service("quizServiceHomeWork3Impl")
-public class QuizServiceImpl extends ru.otus.homework2.service.QuizServiceImpl {
+@Service
+public class QuizServiceImpl implements QuizService {
 
-    private final MessageSource messageSource;
+    private final LSIOService lsioService;
     private final IOService ioService;
-    private final String locale;
+    private final QuestionService questionService;
+    private final PersonService personService;
+    private final int correctAnswers;
+    private final LSService lsService;
 
-    public QuizServiceImpl(IOService ioService, QuestionService questionService, PersonService personService,
-                           @Value("${correctAnswersToPass}") int correctAnswers, MessageSource messageSource,
-                           @Value("${locale}") String locale) {
-        super(ioService, questionService, personService, correctAnswers);
-        this.messageSource = messageSource;
-        this.locale = locale;
+    public QuizServiceImpl(LSIOService lsioService, QuestionService questionService, PersonService personService,
+                           @Value("${correctAnswersToPass}") int correctAnswers, IOService ioService, LSService lsService) {
+        this.lsioService = lsioService;
+        this.questionService = questionService;
+        this.personService = personService;
+        this.correctAnswers = correctAnswers;
         this.ioService = ioService;
+        this.lsService = lsService;
+
     }
 
     @Override
-    public boolean checkAnswer(Question question) {
+    public void startTest() {
+
+        Person person = personService.getPerson();
+        TestResult testResult = new TestResult(person, correctAnswers);
+
+        questionService.getAll().forEach(question -> {
+            boolean answerResult = checkAnswer(question);
+            if (answerResult) {
+                testResult.incCorrectAnswers();
+            } else {
+                testResult.incWrongAnswers();
+            }
+        });
+        writeResult(testResult.isPassed(), testResult.getCorrectAnswers(), testResult.getWrongAnswers());
+    }
+
+    private boolean checkAnswer(Question question) {
         writeQuestion(question.getName());
         List<Answer> answers = question.getAnswers();
         for (int i = 0; i < answers.size(); i++) {
-            writeAnswer(i + 1, question.getName() + "." + answers.get(i).getName());
+            writeAnswer(i + 1, answers.get(i).getName());
         }
-        int answerId = super.readAnswer();
+        int answerId = readAnswer();
         Answer answer = answers.get(answerId - 1);
         return answer.isRight();
     }
 
-    @Override
-    public void writeAnswer(int index, String answer) {
-        answer = messageSource.getMessage(answer, null, Locale.forLanguageTag(locale));
-        answer = messageSource.getMessage("answer", new String[] {String.valueOf(index), answer}, Locale.forLanguageTag(locale));
-        ioService.write(answer);
+    private void writeAnswer(int answerIndex, String answer) {
+        lsioService.write("answer", answerIndex, answer);
     }
 
-    @Override
-    public void writeQuestion(String question) {
-        question = messageSource.getMessage(question, null, Locale.forLanguageTag(locale));
-        ioService.write(question);
+    private void writeQuestion(String question) {
+        lsioService.write("question", question);
     }
 
-    @Override
-    public void writeResult(boolean pass, int correctAnswers, int wrongAnswers) {
-        String testResult = messageSource.getMessage(pass ? "pass" : "not_pass", null,
-                Locale.forLanguageTag(locale));
-        String result = messageSource.getMessage("result",
-                new String[] {testResult, String.valueOf(correctAnswers), String.valueOf(wrongAnswers)},
-                Locale.forLanguageTag(locale));
-        ioService.write(result);
+    private void writeResult(boolean pass, int correctAnswers, int wrongAnswers) {
+        lsioService.write("result", lsService.getMessage(pass ? "pass": "not_pass"),
+                correctAnswers, wrongAnswers);
+    }
+
+    private int readAnswer() {
+        return ioService.readInt();
     }
 }

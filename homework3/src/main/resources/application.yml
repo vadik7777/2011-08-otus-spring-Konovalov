@@ -1,6 +1,5 @@
-questions: csv/questions.csv
+questions: csv/questions
 correctAnswersToPass: 3
-locale: ru
 spring:
   messages:
     basename: i18n/messages
