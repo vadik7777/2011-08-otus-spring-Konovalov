@@ -10,11 +10,17 @@ import java.util.Locale;
 @Service
 public class LSServiceImpl implements LSService {
 
-    private final Locale currentLocale = Locale.getDefault();
     private final MessageSource messageSource;
+
+    private Locale currentLocale = Locale.getDefault();
 
     @Override
     public String getMessage(String message, Object... args) {
         return messageSource.getMessage(message, args, currentLocale);
+    }
+
+    @Override
+    public void setCurrentLocale(Locale currentLocale) {
+        this.currentLocale = currentLocale;
     }
 }

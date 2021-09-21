@@ -7,7 +7,6 @@ import ru.otus.homework3.domain.Person;
 import ru.otus.homework3.domain.Question;
 import ru.otus.homework3.domain.TestResult;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -34,7 +33,7 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public void startTest() {
 
-        Person person = personService.getPerson();
+        Person person = personService.getPerson(null, null);
         TestResult testResult = new TestResult(person, correctAnswers);
 
         questionService.getAll().forEach(question -> {
