@@ -11,6 +11,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>junit</module>
 		<module>homework2</module>
         <module>homework3</module>
     </modules>
