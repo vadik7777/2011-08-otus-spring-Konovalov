@@ -1,6 +1,6 @@
 package ru.otus.homework2.service;
 
-public interface QuizServise {
+public interface QuizService {
 
     void startTest();
 
