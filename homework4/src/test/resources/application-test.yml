@@ -1,0 +1,6 @@
+application:
+  locale: en-EN
+spring:
+  shell:
+    interactive:
+      enabled: false

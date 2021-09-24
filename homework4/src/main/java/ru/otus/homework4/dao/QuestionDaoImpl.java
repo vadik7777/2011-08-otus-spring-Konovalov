@@ -1,8 +1,9 @@
 package ru.otus.homework4.dao;
 
 import au.com.bytecode.opencsv.CSVReader;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.otus.homework4.config.AppConfig;
 import ru.otus.homework4.domain.Answer;
 import ru.otus.homework4.domain.Question;
 import ru.otus.homework4.exception.CSVReadException;
@@ -11,19 +12,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
+@RequiredArgsConstructor
 @Component
 public class QuestionDaoImpl implements QuestionDao {
 
     private final static String BOOLEAN_STRING_TRUE = "true";
 
-
-    private final String fileName;
-
-    public QuestionDaoImpl(@Value("${questions}") String fileName) {
-        this.fileName = fileName;
-    }
+    private final AppConfig appConfig;
 
     public List<Question> getAll() {
         return readQuestions();
@@ -33,7 +29,7 @@ public class QuestionDaoImpl implements QuestionDao {
         List<Question> questionsList = new ArrayList<>();
         List<String[]> allRows = new ArrayList<>();
         try (InputStreamReader inputStreamReader = new InputStreamReader(getClass().getClassLoader()
-                .getResourceAsStream(fileName + "_" + Locale.getDefault().toLanguageTag() + ".csv"));
+                .getResourceAsStream(appConfig.getFileName()));
              CSVReader csvReader = new CSVReader(inputStreamReader)) {
             allRows.addAll(csvReader.readAll());
         } catch (IOException ioException) {

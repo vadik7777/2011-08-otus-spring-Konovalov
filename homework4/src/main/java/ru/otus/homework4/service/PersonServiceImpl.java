@@ -9,28 +9,27 @@ import ru.otus.homework4.domain.Person;
 @Service
 public class PersonServiceImpl implements PersonService {
 
-    private final LSIOService lsioService;
-    private final IOService ioService;
+    private final LocalizationIOService localizationIOService;
     private final PersonDao personDao;
 
     @Override
     public Person getPerson(String firstName, String lastName) {
         if (firstName == null) {
             writeFirstName();
-            firstName = ioService.readString();
+            firstName = localizationIOService.readString();
         }
         if (lastName == null) {
             writeLastName();
-            lastName = ioService.readString();
+            lastName = localizationIOService.readString();
         }
         return personDao.getPerson(firstName, lastName);
     }
 
     private void writeFirstName() {
-        lsioService.write("enter_first_name");
+        localizationIOService.write("enter_first_name");
     }
 
     private void writeLastName() {
-        lsioService.write("enter_last_name");
+        localizationIOService.write("enter_last_name");
     }
 }

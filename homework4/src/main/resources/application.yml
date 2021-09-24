@@ -1,5 +1,7 @@
-questions: csv/questions
-correctAnswersToPass: 3
+application:
+  locale: ru-RU
+  fileName: csv/questions
+  correctAnswersToPass: 3
 spring:
   messages:
     basename: i18n/messages

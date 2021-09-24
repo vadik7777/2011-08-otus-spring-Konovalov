@@ -12,21 +12,17 @@ import java.util.List;
 @Service
 public class QuizServiceImpl implements QuizService {
 
-    private final LSIOService lsioService;
-    private final IOService ioService;
+    private final LocalizationIOService localizationIOService;
     private final QuestionService questionService;
     private final PersonService personService;
     private final int correctAnswers;
-    private final LSService lsService;
 
-    public QuizServiceImpl(LSIOService lsioService, QuestionService questionService, PersonService personService,
-                           @Value("${correctAnswersToPass}") int correctAnswers, IOService ioService, LSService lsService) {
-        this.lsioService = lsioService;
+    public QuizServiceImpl(LocalizationIOService localizationIOService, QuestionService questionService, PersonService personService,
+                           @Value("${application.correctAnswersToPass}") int correctAnswers) {
+        this.localizationIOService = localizationIOService;
         this.questionService = questionService;
         this.personService = personService;
         this.correctAnswers = correctAnswers;
-        this.ioService = ioService;
-        this.lsService = lsService;
 
     }
 
@@ -59,19 +55,18 @@ public class QuizServiceImpl implements QuizService {
     }
 
     private void writeAnswer(int answerIndex, String answer) {
-        lsioService.write("answer", answerIndex, answer);
+        localizationIOService.write("answer", answerIndex, answer);
     }
 
     private void writeQuestion(String question) {
-        lsioService.write("question", question);
+        localizationIOService.write("question", question);
     }
 
     private void writeResult(boolean pass, int correctAnswers, int wrongAnswers) {
-        lsioService.write("result", lsService.getMessage(pass ? "pass": "not_pass"),
-                correctAnswers, wrongAnswers);
+        localizationIOService.write(pass ? "correct-result" : "incorrect-result", correctAnswers, wrongAnswers);
     }
 
     private int readAnswer() {
-        return ioService.readInt();
+        return localizationIOService.readInt();
     }
 }
