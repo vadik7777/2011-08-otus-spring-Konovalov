@@ -1,0 +1,11 @@
+application:
+  locale: ru-RU
+  fileName: csv/questions
+  correctAnswersToPass: 3
+spring:
+  messages:
+    basename: i18n/messages
+    fallback-to-system-locale: false
+  output:
+    ansi:
+      enabled: always
