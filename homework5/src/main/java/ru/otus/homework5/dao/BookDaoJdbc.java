@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.otus.homework5.dao.ext.BookResultSetExtractor;
 import ru.otus.homework5.domain.Author;
 import ru.otus.homework5.domain.Book;
 import ru.otus.homework5.domain.Genre;
@@ -93,7 +92,7 @@ public class BookDaoJdbc implements BookDao {
                 "select b.id, b.name as book_name, b.author_id, b.genre_id," +
                         " a.id, a.name as author_name, g.id, g.name as genre_name " +
                         "from (books b left join authors a on b.author_id = a.id) " +
-                        "left join genres g on b.genre_id = g.id", new BookResultSetExtractor());
+                        "left join genres g on b.genre_id = g.id", new BookMapper());
         return books;
     }
 
