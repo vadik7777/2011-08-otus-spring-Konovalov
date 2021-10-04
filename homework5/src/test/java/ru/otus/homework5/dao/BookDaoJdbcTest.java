@@ -8,8 +8,7 @@ import org.springframework.context.annotation.Import;
 import ru.otus.homework5.domain.Author;
 import ru.otus.homework5.domain.Book;
 import ru.otus.homework5.domain.Genre;
-import ru.otus.homework5.exception.BookNotFoundException;
-import ru.otus.homework5.exception.DuplicateBookException;
+import ru.otus.homework5.exception.NotFoundException;
 
 import java.util.List;
 
@@ -31,24 +30,13 @@ class BookDaoJdbcTest {
     void shouldCorrectInsert() {
         Book expectedBook = Book.builder()
                 .name("book")
-                .author(Author.builder().name("fio").build())
-                .genre(Genre.builder().name("genre").build())
+                .author(Author.builder().id(1).name("fio1").build())
+                .genre(Genre.builder().id(1).name("genre1").build())
                 .build();
         Book book = bookDao.insert(expectedBook);
+        expectedBook.setId(book.getId());
         Book actualBook = bookDao.getById(book.getId());
-        assertThat(actualBook).usingRecursiveComparison().ignoringFields("id").isEqualTo(expectedBook);
-    }
-
-    @DisplayName("выводить ошибку при добавлении дубликата книги в БД")
-    @Test
-    void shouldInCorrectInsert() {
-        Book notCorrectBook = Book.builder()
-                .name("book1")
-                .author(Author.builder().name("fio1").build())
-                .genre(Genre.builder().name("genre1").build())
-                .build();
-        assertThatThrownBy(() -> bookDao.insert(notCorrectBook))
-                .isInstanceOf(DuplicateBookException.class);
+        assertThat(actualBook).usingRecursiveComparison().isEqualTo(expectedBook);
     }
 
     @DisplayName("обновлять книгу в БД")
@@ -57,8 +45,8 @@ class BookDaoJdbcTest {
         Book expectedBook = Book.builder()
                 .id(1)
                 .name("book")
-                .author(Author.builder().name("fio").build())
-                .genre(Genre.builder().name("genre").build())
+                .author(Author.builder().id(1).name("fio1").build())
+                .genre(Genre.builder().id(1).name("genre1").build())
                 .build();
         Book book = bookDao.update(expectedBook);
         Book actualBook = bookDao.getById(book.getId());
@@ -72,7 +60,7 @@ class BookDaoJdbcTest {
                 .id(10)
                 .build();
         assertThatThrownBy(() -> bookDao.update(notCorrectBook))
-                .isInstanceOf(BookNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @DisplayName("возвращать ожидаемую книгу по ее id")
@@ -98,7 +86,7 @@ class BookDaoJdbcTest {
                 .allMatch(s -> s.getGenre() != null);
     }
 
-    @DisplayName("удалять заданную книгу по ее id")
+    @DisplayName("удалять книгу по ее id")
     @Test
     void shouldCorrectDeleteById() {
         assertThatCode(() -> bookDao.getById(EXISTING_BOOK_ID))
@@ -107,6 +95,6 @@ class BookDaoJdbcTest {
         bookDao.deleteById(EXISTING_BOOK_ID);
 
         assertThatThrownBy(() -> bookDao.getById(EXISTING_BOOK_ID))
-                .isInstanceOf(BookNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 }

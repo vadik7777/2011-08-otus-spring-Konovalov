@@ -21,7 +21,7 @@ public class BookResultSetExtractor implements ResultSetExtractor<List<Book>> {
                     .name(rs.getString("name"))
                     .genre(Genre.builder()
                             .id(rs.getLong("genre_id"))
-                            .name(rs.getNString("genre_name"))
+                            .name(rs.getString("genre_name"))
                             .build())
                     .author(Author.builder()
                             .id(rs.getLong("author_id"))
