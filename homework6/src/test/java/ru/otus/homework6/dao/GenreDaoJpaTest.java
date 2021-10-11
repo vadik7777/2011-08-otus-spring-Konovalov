@@ -13,11 +13,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Dao для работы с жанрами должно")
 @DataJpaTest
-@Import(GenreDaoRepositoryJpa.class)
-class GenreDaoRepositoryJpaTest {
+@Import(GenreDaoJpa.class)
+class GenreDaoJpaTest {
 
     @Autowired
-    private GenreDaoRepositoryJpa genreDaoRepositoryJpa;
+    private GenreDaoJpa genreDaoJpa;
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -26,7 +26,7 @@ class GenreDaoRepositoryJpaTest {
     @Test
     void shouldCorrectInsert() {
         val exceptedGenre = new Genre(0, "exceptedGenre");
-        genreDaoRepositoryJpa.insert(exceptedGenre);
+        genreDaoJpa.insert(exceptedGenre);
         testEntityManager.detach(exceptedGenre);
         val actualGenre = testEntityManager.find(Genre.class, exceptedGenre.getId());
         assertThat(actualGenre).usingRecursiveComparison().isEqualTo(exceptedGenre);
@@ -37,7 +37,7 @@ class GenreDaoRepositoryJpaTest {
     @Test
     void shouldCorrectUpdate() {
         val exceptedGenre = new Genre(1, "exceptedGenre");
-        genreDaoRepositoryJpa.update(exceptedGenre);
+        genreDaoJpa.update(exceptedGenre);
         val actualGenre = testEntityManager.find(Genre.class, exceptedGenre.getId());
         assertThat(actualGenre).usingRecursiveComparison().isEqualTo(exceptedGenre);
     }
@@ -46,7 +46,7 @@ class GenreDaoRepositoryJpaTest {
     @Test
     void shouldCorrectGetById() {
         val exceptedGenre = new Genre(1, "genre1");
-        val actualGenre = genreDaoRepositoryJpa.getById(1);
+        val actualGenre = genreDaoJpa.getById(1);
         assertThat(actualGenre).isPresent().get().usingRecursiveComparison().isEqualTo(exceptedGenre);
     }
 }

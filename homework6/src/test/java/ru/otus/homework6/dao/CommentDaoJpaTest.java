@@ -14,11 +14,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Dao для работы с комментариями должно")
 @DataJpaTest
-@Import(CommentDaoRepositoryJpa.class)
-class CommentDaoRepositoryJpaTest {
+@Import(CommentDaoJpa.class)
+class CommentDaoJpaTest {
 
     @Autowired
-    private CommentDaoRepositoryJpa commentDaoRepositoryJpa;
+    private CommentDaoJpa commentDaoJpa;
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -28,7 +28,7 @@ class CommentDaoRepositoryJpaTest {
     void shouldCorrectInsert() {
         val book = testEntityManager.find(Book.class, 1L);
         val exceptedComment = new Comment(0, "exceptedComment", book);
-        commentDaoRepositoryJpa.insert(exceptedComment);
+        commentDaoJpa.insert(exceptedComment);
         testEntityManager.detach(exceptedComment);
         val actualComment = testEntityManager.find(Comment.class, exceptedComment.getId());
         assertThat(actualComment).usingRecursiveComparison().isEqualTo(exceptedComment);
@@ -40,7 +40,7 @@ class CommentDaoRepositoryJpaTest {
         val exceptedComment = testEntityManager.find(Comment.class, 1L);
         exceptedComment.setComment("newComment");
         testEntityManager.detach(exceptedComment);
-        commentDaoRepositoryJpa.update(exceptedComment);
+        commentDaoJpa.update(exceptedComment);
         val actualComment = testEntityManager.find(Comment.class, 1L);
         assertThat(actualComment).usingRecursiveComparison().isEqualTo(exceptedComment);
     }
@@ -50,14 +50,14 @@ class CommentDaoRepositoryJpaTest {
     void shouldCorrectGetById() {
         val exceptedComment = testEntityManager.find(Comment.class, 1L);
         testEntityManager.detach(exceptedComment);
-        val actualComment = commentDaoRepositoryJpa.getById(1L);
+        val actualComment = commentDaoJpa.getById(1L);
         assertThat(actualComment).isPresent().get().usingRecursiveComparison().isEqualTo(exceptedComment);
     }
 
     @DisplayName("должен загружать список всех комментариев")
     @Test
     void shouldCorrectGetAll() {
-        val comments = commentDaoRepositoryJpa.getAll();
+        val comments = commentDaoJpa.getAll();
         assertThat(comments).isNotNull().hasSize(4)
                 .allMatch(c -> !c.getComment().equals(""))
                 .allMatch(c -> c.getBook() != null)
@@ -70,7 +70,7 @@ class CommentDaoRepositoryJpaTest {
     void shouldCorrectDeleteById() {
         val deleteComment = testEntityManager.find(Comment.class, 1L);
         assertThat(deleteComment).isNotNull();
-        commentDaoRepositoryJpa.deleteById(1L);
+        commentDaoJpa.deleteById(1L);
         testEntityManager.detach(deleteComment);
         val deletedComment = testEntityManager.find(Comment.class, 1L);
         assertThat(deletedComment).isNull();

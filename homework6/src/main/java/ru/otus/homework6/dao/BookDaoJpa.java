@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class BookDaoRepositoryJpa implements BookDao {
+public class BookDaoJpa implements BookDao {
 
     @PersistenceContext
     private final EntityManager entityManager;
@@ -28,14 +28,16 @@ public class BookDaoRepositoryJpa implements BookDao {
 
     @Override
     public Optional<Book> getById(long id) {
-        return Optional.ofNullable(entityManager.find(Book.class, id));
+        EntityGraph<?> entityGraph = entityManager.getEntityGraph("book-entity-graph");
+        TypedQuery<Book> query = entityManager.createQuery("select b from Book b where b.id = :id ", Book.class);
+        query.setHint("javax.persistence.fetchgraph", entityGraph);
+        query.setParameter("id", id);
+        return Optional.ofNullable(query.getSingleResult());
     }
 
     @Override
     public List<Book> getAll() {
-        EntityGraph<?> entityGraph = entityManager.getEntityGraph("book-entity-graph");
         TypedQuery<Book> query = entityManager.createQuery("select b from Book b", Book.class);
-        query.setHint("javax.persistence.fetchgraph", entityGraph);
         return query.getResultList();
     }
 

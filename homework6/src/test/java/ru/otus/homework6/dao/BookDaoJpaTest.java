@@ -18,11 +18,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Dao для работы с книгами должно")
 @DataJpaTest
-@Import(BookDaoRepositoryJpa.class)
-class BookDaoRepositoryJpaTest {
+@Import(BookDaoJpa.class)
+class BookDaoJpaTest {
 
     @Autowired
-    private BookDaoRepositoryJpa bookDaoRepositoryJpa;
+    private BookDaoJpa bookDaoJpa;
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -35,36 +35,36 @@ class BookDaoRepositoryJpaTest {
         val comment = new Comment(0, "newComment", null);
         val exceptedBook = new Book(0, "newBook", author, genre, List.of(comment));
         exceptedBook.getComments().get(0).setBook(exceptedBook);
-        bookDaoRepositoryJpa.insert(exceptedBook);
+        bookDaoJpa.insert(exceptedBook);
         testEntityManager.detach(exceptedBook);
-        val actualBook = testEntityManager.find(Book.class, exceptedBook.getId());
+        val actualBook = bookDaoJpa.getById(exceptedBook.getId()).orElseThrow();
         assertThat(actualBook).usingRecursiveComparison().isEqualTo(exceptedBook);
     }
 
     @DisplayName("обновлять книгу")
     @Test
     void shouldCorrectUpdate() {
-        val exceptedBook = testEntityManager.find(Book.class, 1L);
+        val exceptedBook = bookDaoJpa.getById(1L).orElseThrow();
         exceptedBook.setName("newBook");
         testEntityManager.detach(exceptedBook);
-        bookDaoRepositoryJpa.update(exceptedBook);
-        val actualBook = bookDaoRepositoryJpa.getById(1L);
-        assertThat(actualBook).isPresent().get().usingRecursiveComparison().isEqualTo(exceptedBook);
+        bookDaoJpa.update(exceptedBook);
+        val actualBook = bookDaoJpa.getById(1L).orElseThrow();
+        assertThat(actualBook).usingRecursiveComparison().ignoringFields("comments").isEqualTo(exceptedBook);
     }
 
     @DisplayName("получать книгу по id")
     @Test
     void shouldCorrectGetById() {
+        val actualBook = bookDaoJpa.getById(1L).orElseThrow();
+        testEntityManager.detach(actualBook);
         val exceptedBook = testEntityManager.find(Book.class, 1L);
-        testEntityManager.detach(exceptedBook);
-        val actualBook = bookDaoRepositoryJpa.getById(1L);
-        assertThat(actualBook).isPresent().get().usingRecursiveComparison().isEqualTo(exceptedBook);
+        assertThat(actualBook).usingRecursiveComparison().ignoringFields("comments").isEqualTo(exceptedBook);
     }
 
     @DisplayName("должен загружать список всех книг")
     @Test
     void shouldCorrectGetAll() {
-        val books = bookDaoRepositoryJpa.getAll();
+        val books = bookDaoJpa.getAll();
         assertThat(books).isNotNull().hasSize(3)
                 .allMatch(b -> !b.getName().equals(""))
                 .allMatch(b -> b.getAuthor() != null)
@@ -77,7 +77,7 @@ class BookDaoRepositoryJpaTest {
     void shouldCorrectDeleteById() {
         val deleteBook = testEntityManager.find(Book.class, 1L);
         assertThat(deleteBook).isNotNull();
-        bookDaoRepositoryJpa.deleteById(1L);
+        bookDaoJpa.deleteById(1L);
         testEntityManager.detach(deleteBook);
         val deletedBook = testEntityManager.find(Book.class, 1L);
         assertThat(deletedBook).isNull();

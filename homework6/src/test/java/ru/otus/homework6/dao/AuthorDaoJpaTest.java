@@ -13,11 +13,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Dao для работы с авторами должно")
 @DataJpaTest
-@Import(AuthorDaoRepositoryJpa.class)
-class AuthorDaoRepositoryJpaTest {
+@Import(AuthorDaoJpa.class)
+class AuthorDaoJpaTest {
 
     @Autowired
-    private AuthorDaoRepositoryJpa authorDaoRepositoryJpa;
+    private AuthorDaoJpa authorDaoJpa;
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -26,7 +26,7 @@ class AuthorDaoRepositoryJpaTest {
     @Test
     void shouldCorrectInsert() {
         val exceptedAuthor = new Author(0, "exceptedAuthor");
-        authorDaoRepositoryJpa.insert(exceptedAuthor);
+        authorDaoJpa.insert(exceptedAuthor);
         testEntityManager.detach(exceptedAuthor);
         val actualAuthor = testEntityManager.find(Author.class, exceptedAuthor.getId());
         assertThat(actualAuthor).usingRecursiveComparison().isEqualTo(exceptedAuthor);
@@ -36,7 +36,7 @@ class AuthorDaoRepositoryJpaTest {
     @Test
     void shouldCorrectUpdate() {
         val exceptedAuthor = new Author(1, "exceptedAuthor");
-        authorDaoRepositoryJpa.update(exceptedAuthor);
+        authorDaoJpa.update(exceptedAuthor);
         val actualAuthor = testEntityManager.find(Author.class, exceptedAuthor.getId());
         assertThat(actualAuthor).usingRecursiveComparison().isEqualTo(exceptedAuthor);
     }
@@ -45,7 +45,7 @@ class AuthorDaoRepositoryJpaTest {
     @Test
     void shouldCorrectGetById() {
         val exceptedAuthor = new Author(1, "fio1");
-        val actualAuthor = authorDaoRepositoryJpa.getById(1L);
+        val actualAuthor = authorDaoJpa.getById(1L);
         assertThat(actualAuthor).isPresent().get().usingRecursiveComparison().isEqualTo(exceptedAuthor);
     }
 }

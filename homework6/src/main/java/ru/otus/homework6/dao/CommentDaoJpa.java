@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class CommentDaoRepositoryJpa implements CommentDao {
+public class CommentDaoJpa implements CommentDao {
 
     @PersistenceContext
     private final EntityManager entityManager;
@@ -28,14 +28,16 @@ public class CommentDaoRepositoryJpa implements CommentDao {
 
     @Override
     public Optional<Comment> getById(long id) {
-        return Optional.ofNullable(entityManager.find(Comment.class, id));
+        EntityGraph<?> entityGraph = entityManager.getEntityGraph("comment-entity-graph");
+        TypedQuery<Comment> query = entityManager.createQuery("select c from Comment c where c.id = :id ", Comment.class);
+        query.setHint("javax.persistence.fetchgraph", entityGraph);
+        query.setParameter("id", id);
+        return Optional.ofNullable(query.getSingleResult());
     }
 
     @Override
     public List<Comment> getAll() {
-        EntityGraph<?> entityGraph = entityManager.getEntityGraph("comment-entity-graph");
         TypedQuery<Comment> query = entityManager.createQuery("select c from Comment c", Comment.class);
-        query.setHint("javax.persistence.fetchgraph", entityGraph);
         return query.getResultList();
     }
 

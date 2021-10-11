@@ -13,9 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @NamedEntityGraph(name = "book-entity-graph",
-        attributeNodes = {@NamedAttributeNode("author"),
-                @NamedAttributeNode("genre"),
-                @NamedAttributeNode("comments")})
+        attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genre")})
 @Entity
 @Table(name = "books")
 public class Book {
@@ -26,15 +24,15 @@ public class Book {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private Author author;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
     @Fetch(FetchMode.SUBSELECT)
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "book", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "book", fetch = FetchType.LAZY)
     private List<Comment> comments;
 }
