@@ -1,21 +1,20 @@
 package ru.otus.homework8.repository;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import ru.otus.homework8.domain.Book;
 import ru.otus.homework8.domain.Comment;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
-    @Lazy
-    @Autowired
-    private BookRepository bookRepository;
-
+    private final BookRepository bookRepository;
     private final CommentRepository commentRepository;
+
+    public BookRepositoryCustomImpl(@Lazy BookRepository bookRepository, CommentRepository commentRepository) {
+        this.bookRepository = bookRepository;
+        this.commentRepository = commentRepository;
+    }
 
     @Override
     public Book saveCustom(Book book) {

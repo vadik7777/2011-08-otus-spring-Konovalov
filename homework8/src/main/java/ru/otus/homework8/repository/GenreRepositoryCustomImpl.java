@@ -1,7 +1,5 @@
 package ru.otus.homework8.repository;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import ru.otus.homework8.domain.Book;
 import ru.otus.homework8.domain.Comment;
@@ -9,15 +7,18 @@ import ru.otus.homework8.domain.Genre;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 public class GenreRepositoryCustomImpl implements GenreRepositoryCustom {
 
-    @Autowired
-    @Lazy
-    private GenreRepository genreRepository;
-
+    private final GenreRepository genreRepository;
     private final BookRepository bookRepository;
     private final CommentRepository commentRepository;
+
+    public GenreRepositoryCustomImpl( @Lazy GenreRepository genreRepository, BookRepository bookRepository,
+                                      CommentRepository commentRepository) {
+        this.genreRepository = genreRepository;
+        this.bookRepository = bookRepository;
+        this.commentRepository = commentRepository;
+    }
 
     @Override
     public Genre saveCustom(Genre genre) {
