@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit book</title>
+    <link href="css/main.css" rel="stylesheet">
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/webjars/jquery.serializeJSON/2.8.1/jquery.serializejson.min.js"></script>
+</head>
+<body>
+
+<!-- Book edit -->
+<form id="edit-form" method="post">
+    <h1>Edit book:</h1>
+
+    <div class="row">
+        <label for="id-input">ID:</label>
+        <input id="id-input" name="id" type="text" readonly="readonly"/>
+    </div>
+
+    <div class="row">
+        <label for="name-input">Name:</label>
+        <input id="name-input" name="name" type="text" required="required"/>
+    </div>
+
+    <div class="row">
+        <label for="author-input">Author:</label>
+        <select id="author-input" name="author[id]">
+        </select>
+    </div>
+
+    <div class="row">
+        <label for="genre-input">Genre:</label>
+        <select id="genre-input" name="genre[id]">
+        </select>
+    </div>
+
+    <div class="row">
+        <button onclick="editBook()" type="button">Save</button>
+    </div>
+</form>
+
+<script>
+    $(function () {
+        $.ajax({
+            url: '/api/book/' + location.search.substring(4),
+            type: 'GET',
+            success: (function (book) {
+                $('#id-input').val(book.id);
+                $('#name-input').val(book.name);
+                $.ajax({
+                    url: '/api/author',
+                    type: 'GET',
+                    success: (function (authors) {
+                        authors.forEach(function (author) {
+                            $('#author-input').append(`
+                                <option value="${author.id}">${author.name}</option>
+                            `)
+                        });
+                        $('#author-input').val(book.author.id);
+                    })
+                });
+                $.ajax({
+                    url: '/api/genre',
+                    type: 'GET',
+                    success: (function (genres) {
+                        genres.forEach(function (genre) {
+                            $('#genre-input').append(`
+                                <option value="${genre.id}">${genre.name}</option>
+                            `)
+                        });
+                        $('#genre-input').val(book.genre.id);
+                    })
+                });
+            })
+        });
+    });
+    function editBook() {
+        $.ajax({
+            url: '/api/book/' + $('#id-input').val(),
+            type: 'PUT',
+            data: JSON.stringify($('#edit-form').serializeJSON()),
+            contentType: "application/json; charset=utf-8",
+            success: (function () {
+                location.href = '/list.html';
+            })
+        })
+    };
+</script>
+
+</body>
+</html>
