@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all books</title>
+    <link href="css/main.css" rel="stylesheet">
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>Books:</h1>
+
+<table class="books">
+    <a class="link-like-button" href="add.html">Add book</a>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+    $(function () {
+        $.ajax({
+            url: '/api/book',
+            type: 'GET',
+            success: (function (books) {
+                books.forEach(function (book) {
+                    $('tbody').append(`
+                        <tr>
+                            <td>${book.id}</td>
+                            <td>${book.name}</td>
+                            <td>${book.author.name}</td>
+                            <td>${book.genre.name}</td>
+                            <td>
+                                <a class="link-like-button" href="edit.html?id=${book.id}">Edit</a>
+                            </td>
+                            <td>
+                                <button onclick="deleteBook(${book.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `)
+                })
+            })
+        })
+    });
+    function deleteBook(id) {
+      $.ajax({
+          url: '/api/book/' + id,
+          type: 'DELETE',
+          success: (function () {
+              location.href = '/list.html';
+          })
+      })
+    };
+</script>
+</body>
+</html>
