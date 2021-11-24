@@ -1,0 +1,41 @@
+###
+POST http://localhost:8080/api/book
+Content-Type: application/json
+
+{
+  "name": "book_new",
+  "author": {
+    "id": "id_author2"
+  },
+  "genre": {
+    "id": "id_genre1"
+  }
+}
+
+###
+PUT http://localhost:8080/api/book/id_book3
+Content-Type: application/json
+
+{
+  "name": "book_new",
+  "author": {
+    "id": "id_author3"
+  },
+  "genre": {
+    "id": "id_genre1"
+  }
+}
+
+###
+GET http://localhost:8080/api/book
+###
+GET http://localhost:8080/api/book/id_book1
+###
+DELETE http://localhost:8080/api/book/id_book1
+###
+GET http://localhost:8080/api/author
+###
+GET http://localhost:8080/api/genre
+###
+
+
