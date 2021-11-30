@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add book</title>
+    <link href="css/main.css" rel="stylesheet">
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/webjars/jquery.serializeJSON/2.8.1/jquery.serializejson.min.js"></script>
+</head>
+<body>
+
+<!-- Book add -->
+<form id="add-form" method="post">
+    <h1>Add book:</h1>
+
+    <div class="row">
+        <label for="name-input">Name:</label>
+        <input id="name-input" name="name" type="text"/>
+    </div>
+
+    <div class="row">
+        <label for="author-input">Author:</label>
+        <select id="author-input" name="author[id]">
+        </select>
+    </div>
+
+    <div class="row">
+        <label for="genre-input">Genre:</label>
+        <select id="genre-input" name="genre[id]">
+        </select>
+    </div>
+
+    <div class="row">
+        <button onclick="addBook()" type="button">Save</button>
+    </div>
+</form>
+
+<script>
+    $(function () {
+        $.ajax({
+            url: '/api/author',
+            type: 'GET',
+            success: (function (authors) {
+                authors.forEach(function (author) {
+                    $('#author-input').append(`
+                         <option value="${author.id}">${author.name}</option>
+                    `)
+                })
+            })
+        });
+        $.ajax({
+            url: '/api/genre',
+            type: 'GET',
+            success: (function (genres) {
+                genres.forEach(function (genre) {
+                    $('#genre-input').append(`
+                         <option value="${genre.id}">${genre.name}</option>
+                    `)
+                })
+            })
+        });
+    });
+    function addBook() {
+        $.ajax({
+            url: '/api/book/',
+            type: 'POST',
+            data: JSON.stringify($('#add-form').serializeJSON()),
+            contentType: "application/json; charset=utf-8",
+            success: (function () {
+                location.href = '/list.html';
+            })
+        })
+    };
+</script>
+
+</body>
+</html>
