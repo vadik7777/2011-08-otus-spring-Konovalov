@@ -1,0 +1,34 @@
+spring:
+  main:
+    allow-circular-references: true
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+
+  shell:
+    interactive:
+      enabled: false
+
+  h2:
+    console:
+      enabled: true
+
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:test-data.sql
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+
+    properties:
+      hibernate:
+        format_sql: true
+
+    show-sql: true
+
+logging:
+  level:
+    ROOT: ERROR
