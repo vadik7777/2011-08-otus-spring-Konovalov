@@ -3,13 +3,16 @@ package ru.otus.homework15.repository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 import ru.otus.homework15.domain.Matryoshka;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий для работы с матрешками должен")
+@Import(DataSourceAutoConfiguration.class)
 @DataJpaTest
 class MatryoshkaRepositoryTest {
 

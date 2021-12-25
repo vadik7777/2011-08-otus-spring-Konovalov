@@ -3,8 +3,6 @@ package ru.otus.homework15.integration.gateway;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.homework15.dto.MatryoshkaDto;
@@ -17,7 +15,6 @@ import static org.mockito.BDDMockito.given;
 
 @DisplayName("Гейтвей для работы с матрешками должен")
 @SpringBootTest
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 class MatryoshkaGatewayTest {
 
     @MockBean
@@ -52,11 +49,7 @@ class MatryoshkaGatewayTest {
 
 
         var matryoshkaDtoList = matryoshkaGateway.wrap(List.of(inputMatryoshkaDto));
-
         var actualMatryoshkaDto = matryoshkaDtoList.get(0);
-        actualMatryoshkaDto.setId(0);
-        actualMatryoshkaDto.getMatryoshka().setId(0);
-        actualMatryoshkaDto.getMatryoshka().getMatryoshka().setId(0);
 
         assertThat(actualMatryoshkaDto).usingRecursiveComparison().isEqualTo(expectedMatryoshkaDto);
     }
