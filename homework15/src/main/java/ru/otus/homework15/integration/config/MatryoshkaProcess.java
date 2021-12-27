@@ -1,5 +1,6 @@
 package ru.otus.homework15.integration.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
@@ -7,9 +8,13 @@ import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.messaging.MessageChannel;
 import ru.otus.homework15.dto.MatryoshkaDto;
+import ru.otus.homework15.service.MatryoshkaService;
 
+@RequiredArgsConstructor
 @Configuration
 public class MatryoshkaProcess {
+
+    private final MatryoshkaService matryoshkaService;
 
     @Bean
     public MessageChannel matreshkaInputChannel() {
@@ -32,7 +37,7 @@ public class MatryoshkaProcess {
     @Bean
     public IntegrationFlow matreshkaCreateFlow() {
         return flow -> flow
-                .handle("matryoshkaServiceImpl", "create")
+                .handle(matryoshkaService, "create")
                 .channel("matreshkaRouteFlow.input");
     }
 
