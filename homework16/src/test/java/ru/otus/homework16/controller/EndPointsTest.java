@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Actuator должен")
-@WithMockUser(authorities = "ROLE_ADMIN")
 @AutoConfigureMockMvc
 @SpringBootTest
 class EndPointsTest {
@@ -49,7 +48,7 @@ class EndPointsTest {
     @WithMockUser(authorities = "ROLE_ADMIN")
     @DisplayName("предоставлять доступ под ролью ADMIN к health странице и получить сообщение о работающем someservice")
     @Test
-    void shouldCorrectGetHealthAndSomeserviceUpPage() throws Exception {
+    void shouldCorrectGetHealthAndSomeServiceUpPage() throws Exception {
         mockMvc.perform(get("/actuator/health"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Some service is active")));
