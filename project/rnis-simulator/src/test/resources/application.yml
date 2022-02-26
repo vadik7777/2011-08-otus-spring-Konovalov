@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+simulator:
+  tree-json: classpath:data/tree.json
+  async:
+    core-pool-size: 1
+    max-pool-size: 10
+  secure:
+    login: user
+    password: password
+    cookie-value: 123456
