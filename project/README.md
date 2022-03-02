@@ -7,6 +7,7 @@
 * Spring Actuator
 * Spring Data JPA
 * Spring MVC
+* Thymeleaf
 * Spring Cloud OpenFeign
 * Spring Cloud Netflix Hystrix
 * Spring Cloud Netflix Dashboard

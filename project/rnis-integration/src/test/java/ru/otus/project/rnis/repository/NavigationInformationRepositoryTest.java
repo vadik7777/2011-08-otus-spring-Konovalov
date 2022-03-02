@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import ru.otus.project.rnis.entity.*;
 
 import java.time.Instant;
@@ -134,7 +135,8 @@ class NavigationInformationRepositoryTest {
         var expectedNavigationInformationList = List.of(NI_7, NI_6, NI_1);
 
         var actualNavigationInformationList =
-                navigationInformationRepository.findByTransportUnitIdOrderByIdDesc(ID_1, PageRequest.of(0, 3))
+                navigationInformationRepository.findByTransportUnitId(ID_1, PageRequest.of(0, 3,
+                                                                                           Sort.by("id").descending()))
                                                .toList();
         actualNavigationInformationList.forEach(ni -> ni.setTransportUnit(unProxy(ni.getTransportUnit())));
         assertThat(actualNavigationInformationList).usingRecursiveComparison()

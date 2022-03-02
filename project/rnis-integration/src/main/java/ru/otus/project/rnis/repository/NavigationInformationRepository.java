@@ -14,6 +14,6 @@ public interface NavigationInformationRepository extends JpaRepository<Navigatio
 
     Optional<NavigationInformation> findFirstByTransportUnitIdOrderByIdDesc(Long id);
 
-    Page<NavigationInformation> findByTransportUnitIdOrderByIdDesc(Long id, Pageable pageable);
+    Page<NavigationInformation> findByTransportUnitId(Long id, Pageable pageable);
 
 }

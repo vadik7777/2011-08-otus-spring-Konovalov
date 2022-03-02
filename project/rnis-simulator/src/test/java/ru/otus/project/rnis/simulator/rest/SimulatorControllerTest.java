@@ -35,7 +35,7 @@ class SimulatorControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
     private SimulatorSecureConfig simulatorSecureConfig;

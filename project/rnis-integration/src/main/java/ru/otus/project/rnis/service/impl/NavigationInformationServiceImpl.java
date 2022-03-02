@@ -88,7 +88,7 @@ public class NavigationInformationServiceImpl implements NavigationInformationSe
 
     @Transactional
     public Page<NavigationInformationDto> findAllByTransportUnitIdWithHystrix(Long id, Pageable pageable) {
-        return navigationInformationRepository.findByTransportUnitIdOrderByIdDesc(id, pageable)
+        return navigationInformationRepository.findByTransportUnitId(id, pageable)
                                               .map(navigationInformationMapper::toDto);
     }
 

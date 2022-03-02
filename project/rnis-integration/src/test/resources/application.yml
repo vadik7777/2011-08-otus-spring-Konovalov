@@ -20,10 +20,20 @@ spring:
         format_sql: true
     show-sql: true
 
+springdoc:
+  swagger-ui:
+    path: swagger
+
 rnis-service:
+  name: rnis-service
+  description: description
+  build:
+    version: version
+    timestamp: 20220301-1814
+
   with-navigation-information: false
   object-info-pool-size: 10
-  hystrix-dashboard-url:
+  hystrix-dashboard-url: hystrix
 
 rnis:
   url: http://localhost:8081/

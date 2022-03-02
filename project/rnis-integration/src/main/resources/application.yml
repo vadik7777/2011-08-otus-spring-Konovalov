@@ -30,11 +30,6 @@ management:
       exposure:
         include: health, metrics, hystrix.stream
 
-rnis-service:
-  with-navigation-information: false
-  object-info-pool-size: 50
-  hystrix-dashboard-url: /hystrix/monitor?stream=http://${server.address}:${server.port}/actuator/hystrix.stream
-
 hystrix:
   threadpool:
     objectInfoPool:
@@ -53,6 +48,21 @@ hystrix:
         isolation:
           thread:
             timeoutInMilliseconds: 5000
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html
+
+rnis-service:
+  name: "@project.name@"
+  description: "@project.description@"
+  build:
+    version: "@project.version@"
+    timestamp: "@maven.build.timestamp@"
+
+  with-navigation-information: false
+  object-info-pool-size: 50
+  hystrix-dashboard-url: /hystrix/monitor?stream=http://${server.address}:${server.port}/actuator/hystrix.stream
 
 rnis:
   url: http://localhost:8081/

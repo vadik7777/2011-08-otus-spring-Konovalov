@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import ru.otus.project.rnis.dto.rest.*;
 import ru.otus.project.rnis.repository.NavigationInformationRepository;
 import ru.otus.project.rnis.entity.*;
@@ -42,7 +43,7 @@ class NavigationInformationServiceTest {
     private final static NavigationInformation NI_2 = initNI2();
     private final static NavigationInformationDto NI_DTO_2 = initNI2Dto();
 
-    private final static PageRequest PAGE_REQUEST = PageRequest.of(0, 2);
+    private final static PageRequest PAGE_REQUEST = PageRequest.of(0, 2, Sort.by("id").descending());
     private final static Long TOTAL = 2L;
     private final static String[] IGNORE_COMPARATION_FIELDS = {"transportUnit"};
 
@@ -161,7 +162,7 @@ class NavigationInformationServiceTest {
     void shouldCorrectFindAllByTransportUnitId() {
         var expectedNavigationInformationDtoList = new PageImpl<>(List.of(NI_DTO_2, NI_DTO_1), PAGE_REQUEST, TOTAL);
 
-        when(navigationInformationRepository.findByTransportUnitIdOrderByIdDesc(ID_1, PAGE_REQUEST))
+        when(navigationInformationRepository.findByTransportUnitId(ID_1, PAGE_REQUEST))
                 .thenReturn(new PageImpl<>(List.of(NI_2, NI_1), PAGE_REQUEST, TOTAL));
 
         var actualNavigationInformationDtoList =
