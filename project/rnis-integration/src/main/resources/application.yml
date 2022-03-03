@@ -60,6 +60,7 @@ rnis-service:
     version: "@project.version@"
     timestamp: "@maven.build.timestamp@"
 
+  scheduler-enable: true
   with-navigation-information: false
   object-info-pool-size: 50
   hystrix-dashboard-url: /hystrix/monitor?stream=http://${server.address}:${server.port}/actuator/hystrix.stream

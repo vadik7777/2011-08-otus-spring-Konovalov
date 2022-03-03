@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.otus.project.rnis.config.RnisAuthenticationConfig;
 import ru.otus.project.rnis.dto.rnis.AuthenticationParamsDto;
 import ru.otus.project.rnis.feign.RnisAuthenticationProxy;
+import ru.otus.project.rnis.model.CookieData;
 import ru.otus.project.rnis.service.RnisAuthenticationService;
 
 import static ru.otus.project.rnis.constants.RnisConstants.*;
@@ -19,14 +20,13 @@ public class RnisAuthenticationServiceImpl implements RnisAuthenticationService 
 
     private final RnisAuthenticationProxy rnisAuthenticationProxy;
     private final RnisAuthenticationConfig rnisAuthenticationConfig;
-    private volatile String cookie;
-    private volatile String cookieValue;
+    private final CookieData cookieData;
 
     @Override
     public String checkConnectionAndGetCookie() {
-        var body = ping(cookieValue).getBody();
+        var body = ping(cookieData.getCookieValue()).getBody();
         if (RNIS_PING_RESPONSE_SUCCESS_BODY.equals(body)) {
-            return cookie;
+            return cookieData.getCookie();
         }
         var response = connect();
         body = response.getBody();
@@ -34,12 +34,14 @@ public class RnisAuthenticationServiceImpl implements RnisAuthenticationService 
             throw new RuntimeException(RNIS_AUTHENTICATION_ERROR_MESSAGE);
         }
         var cookieList = response.getHeaders().get(HttpHeaders.SET_COOKIE);
-        cookie = cookieList.stream()
-                           .filter(cookie -> cookie.contains(RNIS_SECURE_COOKIE))
-                           .findFirst()
-                           .orElseThrow(() -> new RuntimeException(RNIS_AUTHENTICATION_ERROR_MESSAGE));
-        cookieValue = cookie.replace(RNIS_SECURE_COOKIE_IN_RESPONSE, "");
-        return cookie;
+        var cookie = cookieList.stream()
+                               .filter(c -> c.contains(RNIS_SECURE_COOKIE))
+                               .findFirst()
+                               .orElseThrow(() -> new RuntimeException(RNIS_AUTHENTICATION_ERROR_MESSAGE));
+        var cookieValue = cookie.replace(RNIS_SECURE_COOKIE_IN_RESPONSE, "");
+        cookieData.setData(cookie, cookieValue);
+
+        return cookieData.getCookie();
     }
 
     private ResponseEntity<String> connect() {

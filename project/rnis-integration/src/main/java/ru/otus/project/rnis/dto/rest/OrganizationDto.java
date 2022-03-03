@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class OrganizationDto {
     @Schema(description = "Идентификатор", example = "1")
     private Long id;
-    @Schema(description ="Наименование", example = "Организация 1")
+    @Schema(description = "Наименование", example = "Организация 1")
     private String name;
 }

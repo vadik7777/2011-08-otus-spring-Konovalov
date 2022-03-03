@@ -31,8 +31,8 @@ public class NavigationInformationController {
     @Parameter(name = "id", description = "Идентификатор транспортной единицы", example = "1")
     @GetMapping("/{id}")
     public Page<NavigationInformationDto> getAll(@PathVariable @NonNull Long id,
-                                                  @PageableDefault(sort = "id", direction = Sort.Direction.DESC)
-                                                  @ParameterObject Pageable pageable) {
+                                                 @PageableDefault(sort = "id", direction = Sort.Direction.DESC)
+                                                 @ParameterObject Pageable pageable) {
         return navigationInformationService.findAllByTransportUnitId(id, pageable);
     }
 }

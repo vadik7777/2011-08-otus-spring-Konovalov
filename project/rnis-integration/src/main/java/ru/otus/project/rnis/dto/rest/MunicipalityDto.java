@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class MunicipalityDto {
     @Schema(description = "Идентификатор", example = "1")
     private Long id;
-    @Schema(description ="Наименование", example = "Муниципальное образование 1")
+    @Schema(description = "Наименование", example = "Муниципальное образование 1")
     private String name;
 }

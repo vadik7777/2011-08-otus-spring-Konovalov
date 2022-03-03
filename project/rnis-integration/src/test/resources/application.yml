@@ -1,7 +1,4 @@
 spring:
-  profiles:
-    active: test
-
   datasource:
     url: jdbc:h2:mem:testdb
 
@@ -31,6 +28,7 @@ rnis-service:
     version: version
     timestamp: 20220301-1814
 
+  scheduler-enable: false
   with-navigation-information: false
   object-info-pool-size: 10
   hystrix-dashboard-url: hystrix
