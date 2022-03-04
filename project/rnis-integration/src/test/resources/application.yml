@@ -28,6 +28,7 @@ rnis-service:
   with-navigation-information: false
   object-info-pool-size: 10
   hystrix-dashboard-url: hystrix
+  tree-json: classpath:data/tree.json
 
 rnis:
   url: http://localhost:8081/

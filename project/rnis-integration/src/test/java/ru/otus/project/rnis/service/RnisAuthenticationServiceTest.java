@@ -3,55 +3,57 @@ package ru.otus.project.rnis.service;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import ru.otus.project.rnis.config.RnisAuthenticationConfig;
-import ru.otus.project.rnis.constants.RnisConstants;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import ru.otus.project.rnis.feign.RnisAuthenticationProxy;
+import ru.otus.project.rnis.model.CookieData;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static ru.otus.project.rnis.constants.RnisConstants.*;
 
 @DisplayName("Сервис аутентификации должен")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @SpringBootTest
 class RnisAuthenticationServiceTest {
+
+    @MockBean
+    private RnisAuthenticationProxy rnisAuthenticationProxy;
+
+    @MockBean
+    private CookieData cookieData;
 
     @Autowired
     private RnisAuthenticationService rnisAuthenticationService;
 
-    @Autowired
-    private RnisAuthenticationConfig rnisAuthenticationConfig;
-
-    private String login;
-
-    @BeforeAll
-    void init() {
-        login = rnisAuthenticationConfig.getLogin();
-    }
-
     @DisplayName("проверить соединение и получить ошибку")
-    @Order(1)
     @Test
     void shouldInCorrectCheckConnectionAndGetCookie() {
-        rnisAuthenticationConfig.setLogin("");
+        when(rnisAuthenticationProxy.ping(any())).thenReturn(ResponseEntity.ok(""));
+        when(rnisAuthenticationProxy.connect(any())).thenReturn(ResponseEntity.ok(""));
+
         assertThatThrownBy(() -> rnisAuthenticationService.checkConnectionAndGetCookie())
-                .isInstanceOf(RuntimeException.class).hasMessage(RnisConstants.RNIS_AUTHENTICATION_ERROR_MESSAGE);
+                .isInstanceOf(RuntimeException.class).hasMessage(RNIS_AUTHENTICATION_ERROR_MESSAGE);
     }
 
     @DisplayName("проверить соединение и получить куку")
-    @Order(2)
     @Test
     void shouldCorrectCheckConnectionAndGetCookie() {
-        rnisAuthenticationConfig.setLogin(login);
+        when(rnisAuthenticationProxy.ping(any())).thenReturn(ResponseEntity.ok(""));
+        when(cookieData.getCookie()).thenReturn("someCookie");
+        var responseEntity = ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, RNIS_SECURE_COOKIE)
+                                           .body(RNIS_CONNECT_RESPONSE_SUCCESS_BODY);
+        when(rnisAuthenticationProxy.connect(any())).thenReturn(responseEntity);
         assertNotNull(rnisAuthenticationService.checkConnectionAndGetCookie());
     }
 
     @DisplayName("проверить соединение с установленной кукой")
-    @Order(3)
     @Test
     void shouldCorrectCheckConnectionAndGetCookieWithOldCookie() {
-        rnisAuthenticationConfig.setLogin("");
+        when(cookieData.getCookie()).thenReturn("someCookie");
+        when(rnisAuthenticationProxy.ping(any())).thenReturn(ResponseEntity.ok(RNIS_PING_RESPONSE_SUCCESS_BODY));
         assertNotNull(rnisAuthenticationService.checkConnectionAndGetCookie());
     }
 }

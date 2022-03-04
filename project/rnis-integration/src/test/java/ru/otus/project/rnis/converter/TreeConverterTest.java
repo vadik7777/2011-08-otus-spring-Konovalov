@@ -1,15 +1,18 @@
 package ru.otus.project.rnis.converter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
 import ru.otus.project.rnis.dto.rest.MunicipalityDto;
 import ru.otus.project.rnis.dto.rest.OrganizationDto;
 import ru.otus.project.rnis.dto.rest.TransportTypeDto;
 import ru.otus.project.rnis.dto.rest.TransportUnitDto;
 import ru.otus.project.rnis.dto.rnis.TreeDto;
-import ru.otus.project.rnis.service.RnisService;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -18,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Конвертер для работы с деревом объектов должен")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
 class TreeConverterTest {
 
@@ -26,7 +28,7 @@ class TreeConverterTest {
     private TreeConverter treeConverter;
 
     @Autowired
-    private RnisService rnisService;
+    ObjectMapper objectMapper;
 
     private final static int TRANSPORT_TYPE_COUNT = 6;
     private final static int MUNICIPALITIES_COUNT = 118;
@@ -45,6 +47,9 @@ class TreeConverterTest {
     private final static OrganizationDto ORGANIZATION_DTO = new OrganizationDto(ID_ORGANIZATION, "Организация 6");
     private final static TransportUnitDto TRANSPORT_UNIT_DTO = initTUDto();
 
+    @Value("${rnis-service.tree-json}")
+    private Resource treeJson;
+
     private static TransportUnitDto initTUDto() {
         return new TransportUnitDto(ID_TRANSPORT_UNIT,
                                     "Транспортная единица 1",
@@ -62,13 +67,12 @@ class TreeConverterTest {
     private TreeDto treeDto;
 
     @BeforeAll
-    void init() {
-        treeDto = rnisService.getTree();
+    void init() throws IOException {
+        treeDto = objectMapper.readValue(treeJson.getFile(), TreeDto.class);;
     }
 
     @DisplayName("получать список транспортных типов")
     @Test
-    @Order(1)
     void shouldCorrectGetTransportTypes() {
         var transportTypeDtos = treeConverter.getTransportTypes(treeDto);
         var actualTransportTypeDto = transportTypeDtos.stream()
@@ -82,7 +86,6 @@ class TreeConverterTest {
 
     @DisplayName("получать список МО")
     @Test
-    @Order(2)
     void shouldCorrectGetMunicipalities() {
         var municipalityDtos = treeConverter.getMunicipalities(treeDto);
         var actualMunicipalityDto = municipalityDtos.stream()
@@ -96,7 +99,6 @@ class TreeConverterTest {
 
     @DisplayName("получать список организаций")
     @Test
-    @Order(3)
     void shouldCorrectGetOrganizations() {
         var organizationDtos = treeConverter.getOrganizations(treeDto);
         var actualOrganizationDto = organizationDtos.stream()
@@ -110,7 +112,6 @@ class TreeConverterTest {
 
     @DisplayName("получать список транспортных единиц")
     @Test
-    @Order(4)
     void shouldCorrectGetTransportUnits() {
         var transportUnitDtos = treeConverter.getTransportUnits(treeDto);
         var actualTransportUnitDto = transportUnitDtos.stream()
