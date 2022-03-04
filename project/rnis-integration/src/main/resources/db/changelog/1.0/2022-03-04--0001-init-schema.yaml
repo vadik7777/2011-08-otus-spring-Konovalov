@@ -1,0 +1,144 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2022-03-04--0001-init-schema-transport_type
+      author: v.konovalov
+      createTable:
+        tableName: transport_type
+        columns:
+          - column:
+              name: id
+              type: bigint
+              constraints:
+                nullable: false
+                primaryKey: true
+                primaryKeyName: pk_transport_type
+          - column:
+              name: name
+              type: varchar
+
+  - changeSet:
+      id: 2022-03-04--0001-init-schema-municipality
+      author: v.konovalov
+      createTable:
+        tableName: municipality
+        columns:
+          - column:
+              name: id
+              type: bigint
+              constraints:
+                nullable: false
+                primaryKey: true
+                primaryKeyName: pk_municipality
+          - column:
+              name: name
+              type: varchar
+
+  - changeSet:
+      id: 2022-03-04--0001-init-schema-organization
+      author: v.konovalov
+      createTable:
+        tableName: organization
+        columns:
+          - column:
+              name: id
+              type: bigint
+              constraints:
+                nullable: false
+                primaryKey: true
+                primaryKeyName: pk_organization
+          - column:
+              name: name
+              type: varchar
+
+  - changeSet:
+      id: 2022-03-04--0001-init-schema-transport_unit
+      author: v.konovalov
+      createTable:
+        tableName: transport_unit
+        columns:
+          - column:
+              name: id
+              type: bigint
+              constraints:
+                nullable: false
+                primaryKey: true
+                primaryKeyName: pk_transport_unit
+          - column:
+              name: object_name
+              type: varchar
+          - column:
+              name: phone_of_responsible
+              type: varchar
+          - column:
+              name: information_date
+              type: timestamp without time zone
+          - column:
+              name: longitude
+              type: float8
+          - column:
+              name: latitude
+              type: float8
+          - column:
+              name: speed
+              type: varchar
+          - column:
+              name: direction
+              type: float8
+          - column:
+              name: municipality_id
+              type: bigint
+              constraints:
+                foreignKeyName: fk_municipality
+                references: municipality(id)
+                deleteCascade: true
+          - column:
+              name: transport_type_id
+              type: bigint
+              constraints:
+                foreignKeyName: fk_transport_type
+                references: transport_type(id)
+                deleteCascade: true
+          - column:
+              name: organization_id
+              type: bigint
+              constraints:
+                foreignKeyName: fk_organization
+                references: organization(id)
+                deleteCascade: true
+
+  - changeSet:
+      id: 2022-03-04--0001-init-schema-navigation_information
+      author: v.konovalov
+      createTable:
+        tableName: navigation_information
+        columns:
+          - column:
+              name: id
+              type: bigint
+              autoIncrement: true
+              constraints:
+                nullable: false
+                primaryKey: true
+                primaryKeyName: pk_navigation_information
+          - column:
+              name: information_date
+              type: timestamp without time zone
+          - column:
+              name: longitude
+              type: float8
+          - column:
+              name: latitude
+              type: float8
+          - column:
+              name: speed
+              type: varchar
+          - column:
+              name: direction
+              type: float8
+          - column:
+              name: transport_unit_id
+              type: bigint
+              constraints:
+                foreignKeyName: fk_transport_unit
+                references: transport_unit(id)
+                deleteCascade: true

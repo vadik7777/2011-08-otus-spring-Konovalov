@@ -1,12 +1,8 @@
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
-
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:data-test.sql
-      encoding: utf-8
+  liquibase:
+    contexts: test
 
   jpa:
     generate-ddl: false
