@@ -19,14 +19,14 @@ databaseChangeLog:
       context: test
       runOnChange: true
       loadUpdateData:
-          primaryKey: id
-          file: data/2022-03-04--0002-municipality.csv
-          relativeToChangelogFile: true
-          separator: ;
-          quotChar: '"'
-          seperator: ';'
-          encoding: UTF-8
-          tableName: municipality
+        primaryKey: id
+        file: data/2022-03-04--0002-municipality.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        seperator: ';'
+        encoding: UTF-8
+        tableName: municipality
   - changeSet:
       id: 2022-03-04--0001-init-data-organization
       author: v.konovalov

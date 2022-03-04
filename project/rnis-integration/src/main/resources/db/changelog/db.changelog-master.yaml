@@ -1,6 +1,6 @@
 databaseChangeLog:
-- includeAll:
-    path: db/changelog/1.0/
-- includeAll:
-    context: test
-    path: db/changelog/test-data/
+  - includeAll:
+      path: db/changelog/1.0/
+  - includeAll:
+      context: test
+      path: db/changelog/test-data/
