@@ -1,9 +1,10 @@
 package ru.otus.project.rnis.service.impl;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import ru.otus.project.rnis.dto.rnis.ObjectInfoDto;
 import ru.otus.project.rnis.dto.rnis.TreeDto;
@@ -16,11 +17,16 @@ import static ru.otus.project.rnis.constants.RnisConstants.ID_WRONG_OBJECT_INFO;
 import static ru.otus.project.rnis.constants.RnisConstants.RNIS_RESULT_SUCCESS_RESPONSE;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class RnisServiceImpl implements RnisService {
 
     private final RnisSecureProxy rnisSecureProxy;
+    private final RnisServiceImpl self;
+
+    public RnisServiceImpl(RnisSecureProxy rnisSecureProxy, @Lazy RnisServiceImpl self) {
+        this.rnisSecureProxy = rnisSecureProxy;
+        this.self = self;
+    }
 
     @Override
     public ResponseEntity<String> ping() {
@@ -31,6 +37,11 @@ public class RnisServiceImpl implements RnisService {
             threadPoolKey = "objectInfoPool")
     @Override
     public ObjectInfoDto getObjectInfo(Long oid) {
+        return self.getObjectInfoWithHystrix(oid);
+    }
+
+    @Retryable
+    public ObjectInfoDto getObjectInfoWithHystrix(Long oid) {
         var objectInfoDto = rnisSecureProxy.fullObjInfo(oid);
         if (!Objects.equals(RNIS_RESULT_SUCCESS_RESPONSE, objectInfoDto.getResult())) {
             throw new RuntimeException();
@@ -43,10 +54,14 @@ public class RnisServiceImpl implements RnisService {
         return new ObjectInfoDto(ID_WRONG_OBJECT_INFO);
     }
 
-
     @HystrixCommand(groupKey = "rnis", commandKey = "get tree from rnis", fallbackMethod = "getTreeFallbackMethod")
     @Override
     public TreeDto getTree() {
+        return self.getTreeWithHystrix();
+    }
+
+    @Retryable
+    public TreeDto getTreeWithHystrix() {
         var treeDto = rnisSecureProxy.getTree(true);
         if (!Objects.equals(RNIS_RESULT_SUCCESS_RESPONSE, treeDto.getResult())) {
             throw new RuntimeException();
