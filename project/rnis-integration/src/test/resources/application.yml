@@ -25,7 +25,7 @@ rnis-service:
     timestamp: 20220301-1814
 
   scheduler-enable: false
-  with-navigation-information: false
+  navigation-information-enable: false
   object-info-pool-size: 10
   hystrix-dashboard-url: hystrix
   tree-json: classpath:data/tree.json

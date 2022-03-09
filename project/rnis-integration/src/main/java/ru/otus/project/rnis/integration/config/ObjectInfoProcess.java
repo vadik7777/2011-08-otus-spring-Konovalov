@@ -32,21 +32,21 @@ public class ObjectInfoProcess {
     private final NavigationInformationService navigationInformationService;
     private final RnisService rnisService;
     private final ObjectInfoConverter objectInfoConverter;
-    private final boolean withNavigationInformation;
+    private final boolean navigationInformationEnable;
     private final int objectInfoPoolSize;
     private final ProcessUtils processUtils;
 
     public ObjectInfoProcess(TransportUnitService transportUnitService,
                              NavigationInformationService navigationInformationService,
                              RnisService rnisService, ObjectInfoConverter objectInfoConverter,
-                             @Value("${rnis-service.with-navigation-information}") boolean withNavigationInformation,
+                             @Value("${rnis-service.navigation-information-enable}") boolean navigationInformationEnable,
                              @Value("${rnis-service.object-info-pool-size}") int objectInfoPoolSize,
                              ProcessUtils processUtils) {
         this.transportUnitService = transportUnitService;
         this.navigationInformationService = navigationInformationService;
         this.rnisService = rnisService;
         this.objectInfoConverter = objectInfoConverter;
-        this.withNavigationInformation = withNavigationInformation;
+        this.navigationInformationEnable = navigationInformationEnable;
         this.objectInfoPoolSize = objectInfoPoolSize;
         this.processUtils = processUtils;
     }
@@ -91,7 +91,7 @@ public class ObjectInfoProcess {
     public IntegrationFlow toSubscribesObjectInfoFlow() {
         return flow -> flow
                 .publishSubscribeChannel(p -> {
-                    if (withNavigationInformation) {
+                    if (navigationInformationEnable) {
                         p.subscribe(getTransportUnitFlow())
                          .subscribe(getNavigationInformationFlow());
                     } else {
@@ -116,7 +116,7 @@ public class ObjectInfoProcess {
                 .handle(transportUnitService, UPDATE_METHOD_NAME)
                 .aggregate()
                 .handle(processUtils, GENERATE_END_MESSAGE_METHOD_NAME)
-                .to(withNavigationInformation ? aggregateEndObjectInfoProcessWithNavigationInformationFlow()
+                .to(navigationInformationEnable ? aggregateEndObjectInfoProcessWithNavigationInformationFlow()
                             : endObjectInfoProcessWithOutNavigationInformationFlow());
     }
 

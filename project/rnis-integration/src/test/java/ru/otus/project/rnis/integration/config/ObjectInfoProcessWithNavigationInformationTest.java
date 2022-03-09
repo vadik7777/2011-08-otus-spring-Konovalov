@@ -20,7 +20,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Процесс обновления объектов должен")
-@SpringBootTest(properties = "rnis-service.with-navigation-information=true")
+@SpringBootTest(properties = "rnis-service.navigation-information-enable=true")
 class ObjectInfoProcessWithNavigationInformationTest {
 
     private final static List<Long> ID_TRANSPORT_UNITS = List.of(1L, 2L);
