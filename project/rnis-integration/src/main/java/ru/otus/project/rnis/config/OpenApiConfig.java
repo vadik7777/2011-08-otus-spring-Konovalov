@@ -6,9 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 @Configuration
 public class OpenApiConfig {
 
@@ -19,11 +16,11 @@ public class OpenApiConfig {
     public OpenApiConfig(@Value("${rnis-service.name}") String name,
                          @Value("${rnis-service.description}") String description,
                          @Value("${rnis-service.build.version}") String version,
-                         @Value("${rnis-service.build.timestamp}") String buildTime) throws ParseException {
+                         @Value("${rnis-service.build.timestamp}") String buildTime) {
         this.name = name;
         this.description = description;
         this.version = new StringBuilder(version).append(", ")
-                                                 .append(new SimpleDateFormat("yyyyMMdd-HHmm").parse(buildTime))
+                                                 .append(buildTime)
                                                  .toString();
     }
 

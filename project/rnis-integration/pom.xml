@@ -15,8 +15,11 @@
     <description>Интеграция с РНИС</description>
     <properties>
         <java.version>11</java.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <modelmapper.version>3.0.0</modelmapper.version>
         <spring-cloud.version>2021.0.0</spring-cloud.version>
         <openapi.version>1.6.4</openapi.version>
@@ -107,6 +110,7 @@
     </dependencyManagement>
 
     <build>
+        <finalName>rnis</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
