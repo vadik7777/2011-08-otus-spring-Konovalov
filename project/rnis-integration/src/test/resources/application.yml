@@ -1,3 +1,16 @@
+rnis-service:
+  scheduler-enable: false
+  navigation-information-enable: false
+  object-info-pool-size: 10
+  hystrix-dashboard-url: hystrix
+  tree-json: classpath:data/tree.json
+
+rnis:
+  url: http://localhost:8081/
+  authentication:
+    login: user
+    password: password
+
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
@@ -17,21 +30,9 @@ springdoc:
   swagger-ui:
     path: swagger
 
-rnis-service:
+open-api-info:
   name: rnis-service
   description: description
   build:
     version: version
-    timestamp: 20220301-1814
-
-  scheduler-enable: false
-  navigation-information-enable: false
-  object-info-pool-size: 10
-  hystrix-dashboard-url: hystrix
-  tree-json: classpath:data/tree.json
-
-rnis:
-  url: http://localhost:8081/
-  authentication:
-    login: user
-    password: password
+    timestamp: some date

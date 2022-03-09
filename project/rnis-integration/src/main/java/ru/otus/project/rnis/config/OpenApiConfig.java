@@ -13,10 +13,10 @@ public class OpenApiConfig {
     private final String description;
     private final String name;
 
-    public OpenApiConfig(@Value("${rnis-service.name}") String name,
-                         @Value("${rnis-service.description}") String description,
-                         @Value("${rnis-service.build.version}") String version,
-                         @Value("${rnis-service.build.timestamp}") String buildTime) {
+    public OpenApiConfig(@Value("${open-api-info.name}") String name,
+                         @Value("${open-api-info.description}") String description,
+                         @Value("${open-api-info.build.version}") String version,
+                         @Value("${open-api-info.build.timestamp}") String buildTime) {
         this.name = name;
         this.description = description;
         this.version = new StringBuilder(version).append(", ")
