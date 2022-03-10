@@ -57,7 +57,8 @@ public class TransportUnitServiceImpl implements TransportUnitService {
         return List.of();
     }
 
-    @HystrixCommand(groupKey = "transport unit", commandKey = "update transport unit", fallbackMethod = "updateFallback")
+    @HystrixCommand(groupKey = "transport unit", commandKey = "update transport unit", fallbackMethod = "updateFallback",
+            threadPoolKey = "objectInfoPool")
     @Override
     public boolean update(TransportUnitDto transportUnitDto) {
         return self.updateWithHystrix(transportUnitDto);

@@ -32,7 +32,8 @@ public class NavigationInformationServiceImpl implements NavigationInformationSe
         this.self = self;
     }
 
-    @HystrixCommand(groupKey = "navigation information", commandKey = "save navigation information", fallbackMethod = "saveFallback")
+    @HystrixCommand(groupKey = "navigation information", commandKey = "save navigation information", fallbackMethod = "saveFallback",
+            threadPoolKey = "objectInfoPool")
     @Override
     public boolean save(NavigationInformationDto navigationInformationDto) {
         return self.saveWithHystrix(navigationInformationDto);

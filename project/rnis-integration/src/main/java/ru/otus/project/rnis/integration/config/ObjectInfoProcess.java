@@ -74,45 +74,29 @@ public class ObjectInfoProcess {
                 .<List<Long>, Boolean>route(list -> list.isEmpty(),
                                             mapping -> mapping
                                                     .subFlowMapping(true, endObjectInfoProcessWithOutElements())
-                                                    .subFlowMapping(false, getObjectInfoFlow()));
+                                                    .subFlowMapping(false, objectInfoFlow()));
     }
 
     @Bean
-    public IntegrationFlow getObjectInfoFlow() {
+    public IntegrationFlow objectInfoFlow() {
         return flow -> flow
                 .split()
                 .channel(MessageChannels.executor(Executors.newFixedThreadPool(objectInfoPoolSize)))
                 .handle(rnisService, GET_OBJECT_INFO_METHOD_NAME)
-                .aggregate()
-                .to(toSubscribesObjectInfoFlow());
-    }
-
-    @Bean
-    public IntegrationFlow toSubscribesObjectInfoFlow() {
-        return flow -> flow
                 .publishSubscribeChannel(p -> {
                     if (navigationInformationEnable) {
-                        p.subscribe(getTransportUnitFlow())
-                         .subscribe(getNavigationInformationFlow());
+                        p.subscribe(transportUnitFlow())
+                         .subscribe(navigationInformationFlow());
                     } else {
-                        p.subscribe(getTransportUnitFlow());
+                        p.subscribe(transportUnitFlow());
                     }
                 });
     }
 
     @Bean
-    public IntegrationFlow getTransportUnitFlow() {
+    public IntegrationFlow transportUnitFlow() {
         return flow -> flow
-                .split()
                 .handle(objectInfoConverter, GET_TRANSPORT_UNIT_METHOD_NAME)
-                .aggregate()
-                .to(updateTransportUnitFlow());
-    }
-
-    @Bean
-    public IntegrationFlow updateTransportUnitFlow() {
-        return flow -> flow
-                .split()
                 .handle(transportUnitService, UPDATE_METHOD_NAME)
                 .aggregate()
                 .handle(processUtils, GENERATE_END_MESSAGE_METHOD_NAME)
@@ -121,18 +105,9 @@ public class ObjectInfoProcess {
     }
 
     @Bean
-    public IntegrationFlow getNavigationInformationFlow() {
+    public IntegrationFlow navigationInformationFlow() {
         return flow -> flow
-                .split()
                 .handle(objectInfoConverter, GET_NAVIGATION_INFORMATION_METHOD_NAME)
-                .aggregate()
-                .to(saveNavigationInformationFlow());
-    }
-
-    @Bean
-    public IntegrationFlow saveNavigationInformationFlow() {
-        return flow -> flow
-                .split()
                 .handle(navigationInformationService, SAVE_METHOD_NAME)
                 .aggregate()
                 .handle(processUtils, GENERATE_END_MESSAGE_METHOD_NAME)
