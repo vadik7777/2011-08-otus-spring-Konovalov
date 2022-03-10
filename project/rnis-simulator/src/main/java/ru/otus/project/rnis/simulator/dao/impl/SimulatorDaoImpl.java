@@ -112,7 +112,7 @@ public class SimulatorDaoImpl implements SimulatorDao {
     @PostConstruct
     public void init() {
         try {
-            tree = objectMapper.readValue(treeJson.getFile(), Tree.class);
+            tree = objectMapper.readValue(treeJson.getInputStream(), Tree.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

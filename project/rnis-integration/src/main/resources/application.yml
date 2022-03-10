@@ -1,11 +1,11 @@
 server:
-  address: ${SERVER_ADDRESS:127.0.0.1}
-  port: ${SERVER_PORT:8080}
+  address: ${RNIS_ADDRESS:0.0.0.0}
+  port: ${RNIS_PORT:8080}
 
 rnis-service:
   scheduler-enable: ${RNIS_SERVICE_SCHEDULER_ENABLE:true}
   navigation-information-enable: ${RNIS_SERVICE_WITH_NAVIGATION_INFORMATION:false}
-  object-info-pool-size: ${RNIS_SERVIEC_OBJECT_INFO_POOL_SIZE:50}
+  object-info-pool-size: ${RNIS_SERVICE_OBJECT_INFO_POOL_SIZE:50}
   hystrix-object-info-pool-size: ${RNIS_SERVICE_HYSTRIX_OBJECT_INFO_POOL_SIZE:100} # use more than object-info-pool-size
   hystrix-dashboard-url: /hystrix/monitor?stream=http://${server.address}:${server.port}/actuator/hystrix.stream
 
@@ -21,12 +21,17 @@ spring:
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
   liquibase:
-    default-schema: ${DB_SCHEMA:gkh-service}
+    default-schema: ${DB_SCHEMA:rnis}
     contexts: default
   jpa:
     generate-ddl: false
     hibernate:
       ddl-auto: validate
+  hikari:
+    minimumIdle: 5
+    maximumPoolSize: 200
+    idleTimeout: 3000000
+    connectionTimeout: 300000
 
 logging:
   level:

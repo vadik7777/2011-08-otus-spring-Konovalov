@@ -68,7 +68,7 @@ class TreeConverterTest {
 
     @BeforeAll
     void init() throws IOException {
-        treeDto = objectMapper.readValue(treeJson.getFile(), TreeDto.class);;
+        treeDto = objectMapper.readValue(treeJson.getInputStream(), TreeDto.class);;
     }
 
     @DisplayName("получать список транспортных типов")
