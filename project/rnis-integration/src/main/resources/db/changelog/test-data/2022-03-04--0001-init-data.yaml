@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2022-03-04--0001-init-data-transport-type
+      author: v.konovalov
+      context: test
+      runOnChange: true
+      loadUpdateData:
+        primaryKey: id
+        file: data/2022-03-04--0001-transport_type.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        seperator: ';'
+        encoding: UTF-8
+        tableName: transport_type
+  - changeSet:
+      id: 2022-03-04--0001-init-data-municipality
+      author: v.konovalov
+      context: test
+      runOnChange: true
+      loadUpdateData:
+        primaryKey: id
+        file: data/2022-03-04--0002-municipality.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        seperator: ';'
+        encoding: UTF-8
+        tableName: municipality
+  - changeSet:
+      id: 2022-03-04--0001-init-data-organization
+      author: v.konovalov
+      context: test
+      runOnChange: true
+      loadUpdateData:
+        primaryKey: id
+        file: data/2022-03-04--0003-organization.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        seperator: ';'
+        encoding: UTF-8
+        tableName: organization
+  - changeSet:
+      id: 2022-03-04--0001-init-data-transport_unit
+      author: v.konovalov
+      context: test
+      runOnChange: true
+      loadUpdateData:
+        primaryKey: id
+        file: data/2022-03-04--0004-transport_unit.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        seperator: ';'
+        encoding: UTF-8
+        tableName: transport_unit
+  - changeSet:
+      id: 2022-03-04--0001-init-data-navigation_information
+      author: v.konovalov
+      context: test
+      runOnChange: true
+      loadUpdateData:
+        primaryKey: id
+        file: data/2022-03-04--0005-navigation_information.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        seperator: ';'
+        encoding: UTF-8
+        tableName: navigation_information

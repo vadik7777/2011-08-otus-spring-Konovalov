@@ -1,0 +1,12 @@
+server:
+  port: ${RNIS_SIMULATOR_PORT:8081}
+
+simulator:
+  tree-json: classpath:data/tree.json
+  async:
+    core-pool-size: 5
+    max-pool-size: 10
+  secure:
+    login: user
+    password: password
+    cookie-value: 123456

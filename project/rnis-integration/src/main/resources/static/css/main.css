@@ -1,0 +1,7 @@
+body {
+    padding: 50px;
+}
+#links a {
+    display: inline-block;
+    margin-right: 20px;
+}

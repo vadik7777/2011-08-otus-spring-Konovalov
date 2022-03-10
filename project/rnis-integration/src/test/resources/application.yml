@@ -1,0 +1,39 @@
+rnis-service:
+  scheduler-enable: false
+  navigation-information-enable: false
+  object-info-pool-size: 10
+  hystrix-dashboard-url: hystrix
+  tree-json: classpath:data/tree.json
+
+rnis:
+  url: http://localhost:8081/
+  authentication:
+    login: user
+    password: password
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+  liquibase:
+    contexts: test
+    default-schema: public
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+springdoc:
+  swagger-ui:
+    path: swagger
+
+open-api-info:
+  name: rnis-service
+  description: description
+  build:
+    version: version
+    timestamp: some date

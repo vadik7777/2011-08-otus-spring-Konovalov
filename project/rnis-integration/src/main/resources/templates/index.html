@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link th:href="@{/css/main.css}" href="../static/css/main.css" rel="stylesheet">
+    <title>Интеграция с РНИС</title>
+</head>
+<body>
+<h1>Интеграция с РНИС</h1>
+<div id="links">
+    <a th:href="${hystrixDashboardUrl}" href="/">
+        <img th:src="@{/img/hystrix.png}" src="../static/img/hystrix.png">
+    </a>
+    <a th:href="${swaggerUrl}" href="/">
+        <img th:src="@{/img/swagger.png}" src="../static/img/swagger.png">
+    </a>
+</div>
+</body>
+</html>
