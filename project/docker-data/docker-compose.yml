@@ -1,0 +1,71 @@
+version: '3.7'
+services:
+
+  postgres:
+    image: postgres:14.2-alpine
+    ports:
+      - ${DATABASE_PORT:-5432}:${DATABASE_PORT:-5432}
+    environment:
+      - POSTGRES_USER=${DB_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+      - POSTGRES_DB=${DB_NAME:-rnis}
+    env_file:
+      - .env
+    networks:
+      - nw
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d/
+
+  simulator:
+    build:
+      context: ../
+      dockerfile: ./docker-data/rnis-simulator/Dockerfile
+    ports:
+      - ${RNIS_SIMULATOR_PORT:-8081}:${RNIS_SIMULATOR_PORT:-8081}
+    environment:
+      - SERVER_PORT=${RNIS_SIMULATOR_PORT:-8081}
+    env_file:
+      - .env
+    networks:
+      - nw
+
+  rnis:
+    build:
+      context: ../
+      dockerfile: ./docker-data/rnis-service/Dockerfile
+    ports:
+      - ${RNIS_PORT:-8080}:${RNIS_PORT:-8080}
+    environment:
+      - SERVER_ADDRESS=${RNIS_ADDRESS:-0.0.0.0}
+      - SERVER_PORT=${RNIS_PORT:-8080}
+
+      - RNIS_SERVICE_SCHEDULER_ENABLE=${RNIS_SERVICE_SCHEDULER_ENABLE:-true}
+      - RNIS_SERVICE_WITH_NAVIGATION_INFORMATION=${RNIS_SERVICE_WITH_NAVIGATION_INFORMATION:-false}
+      - RNIS_SERVICE_OBJECT_INFO_POOL_SIZE=${RNIS_SERVICE_OBJECT_INFO_POOL_SIZE:-50}
+      - RNIS_SERVICE_HYSTRIX_OBJECT_INFO_POOL_SIZE=${RNIS_SERVICE_HYSTRIX_OBJECT_INFO_POOL_SIZE:-100}
+
+      - RNIS_URL=${RNIS_URL:-http://localhost:8081}
+      - RNIS_AUTHENTICATION_LOGIN=${RNIS_AUTHENTICATION_LOGIN:-user}
+      - RNIS_AUTHENTICATION_PASSWORD=${RNIS_AUTHENTICATION_PASSWORD:-password}
+
+      - DATABASE_HOST=${DATABASE_HOST:-localhost}
+      - DATABASE_PORT=${DATABASE_PORT:-5432}
+
+      - DB_NAME=${DB_NAME:-rnis}
+      - DB_SCHEMA=${DB_SCHEMA:-rnis}
+      - DB_USERNAME=${DB_USERNAME:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+    depends_on:
+      - postgres
+      - simulator
+    env_file:
+      - .env
+    networks:
+      - nw
+
+volumes:
+  db-data:
+
+networks:
+  nw:
