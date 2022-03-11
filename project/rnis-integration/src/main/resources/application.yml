@@ -66,6 +66,16 @@ hystrix:
         isolation:
           semaphore:
             maxConcurrentRequests: ${rnis-service.hystrix-object-info-pool-size}
+    update transport unit:
+      fallback:
+        isolation:
+          semaphore:
+            maxConcurrentRequests: ${rnis-service.hystrix-object-info-pool-size}
+    save navigation information:
+      fallback:
+        isolation:
+          semaphore:
+            maxConcurrentRequests: ${rnis-service.hystrix-object-info-pool-size}
     default:
       execution:
         isolation:
